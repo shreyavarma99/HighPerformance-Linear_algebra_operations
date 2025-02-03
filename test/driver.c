@@ -8,6 +8,7 @@ int main(int argc, char *argv[])
     if ( err != 0 ) return 1;
     	
 	//test_gemm(nrepeats, first, last, inc);
-    test_dot(nrepeats, first, last, inc);
+    //test_dot(nrepeats, first, last, inc);
+    test_axpy(nrepeats, first, last, inc);
 
 }
