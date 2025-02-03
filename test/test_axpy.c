@@ -6,7 +6,6 @@
 #include "blis.h"
 
 
-// Function to test the AXPY implementation
 int test_axpy(int nrepeats, int first, int last, int inc) {
     int size, irep;
     double *x, *y_my, *y_ref;
@@ -23,15 +22,12 @@ int test_axpy(int nrepeats, int first, int last, int inc) {
            (unsigned long)0, 0.0, 0.0, 0.0);
 
 
-    // Loop through various sizes of vectors
     for (size = last; size >= first; size -= inc) {
-        // Allocate vectors
         x = (double *)malloc(size * sizeof(double));
         y_my = (double *)malloc(size * sizeof(double));
         y_ref = (double *)malloc(size * sizeof(double));
 
 
-        // Initialize vectors with random values
         for (int i = 0; i < size; i++) {
             x[i] = (double)(rand() % 100) / 10.0;
             y_my[i] = y_ref[i] = (double)(rand() % 100) / 10.0;

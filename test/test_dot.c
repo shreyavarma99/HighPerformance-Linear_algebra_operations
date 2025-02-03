@@ -6,7 +6,6 @@
 #include "blis.h"
 
 
-// Function to test the dot product implementation
 int test_dot(int nrepeats, int first, int last, int inc) {
     int size, irep;
     double *x, *y;
@@ -23,21 +22,18 @@ int test_dot(int nrepeats, int first, int last, int inc) {
            (unsigned long)0, 0.0, 0.0, 0.0);
 
 
-    // Loop through various sizes of vectors
     for (size = last; size >= first; size -= inc) {
         // Allocate vectors
         x = (double *)malloc(size * sizeof(double));
         y = (double *)malloc(size * sizeof(double));
 
 
-        // Initialize vectors with random values
         for (int i = 0; i < size; i++) {
             x[i] = (double)(rand() % 100) / 10.0;
             y[i] = (double)(rand() % 100) / 10.0;
         }
 
 
-        // Run BLIS reference implementation
         for (irep = 0; irep < nrepeats; irep++) {
             rho_ref = 0.0;
             t_start = bli_clock();
@@ -46,7 +42,6 @@ int test_dot(int nrepeats, int first, int last, int inc) {
         }
 
 
-        // Run your implementation
         for (irep = 0; irep < nrepeats; irep++) {
             rho = 0.0;
             t_start = bli_clock();
@@ -55,7 +50,6 @@ int test_dot(int nrepeats, int first, int last, int inc) {
         }
 
 
-        // Compare the results
         diff = fabs(rho - rho_ref);
         maxdiff = fmax(diff, maxdiff);
 
@@ -65,15 +59,6 @@ int test_dot(int nrepeats, int first, int last, int inc) {
                (unsigned long)(size - first) / inc + 1,
                (unsigned long)size, t_ref, t, diff);
 
-
-        // if (diff > tolerance) {
-        //     printf("Test failed for size %d: Difference (%e) exceeded tolerance (%e).\n", size, diff, tolerance);
-        // } else {
-        //     printf("Test passed for size %d: Difference = %e\n", size, diff);
-        // }
-
-
-        // Free allocated memory
         free(x);
         free(y);
     }

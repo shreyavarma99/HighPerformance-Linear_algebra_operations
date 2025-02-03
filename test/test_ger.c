@@ -4,7 +4,6 @@
 #include <float.h>
 #include <math.h>
 
-// Function to test GER
 int test_ger(int nrepeats, int first, int last, int inc) {
     int size, irep;
     int m, n;
@@ -28,20 +27,17 @@ int test_ger(int nrepeats, int first, int last, int inc) {
            (unsigned long)(last - first) / inc + 1,
            (unsigned long)0, (unsigned long)0, (unsigned long)0, 0.0, 0.0, 0.0);
 
-    // Loop through different sizes
     for (size = last; size >= first; size -= inc) {
-        m = size;            // Rows of A
-        n = size / 2;        // Columns of A (adjust as needed)
-        csA = n;             // Column stride (elements per row)
-        rsA = 1;             // Row stride
+        m = size;
+        n = size / 2;
+        csA = n;
+        rsA = 1;
 
-        // Allocate matrix A and vectors x, y
         A_my = (double *)malloc(m * n * sizeof(double));
         A_ref = (double *)malloc(m * n * sizeof(double));
         x = (double *)malloc(m * sizeof(double));
         y = (double *)malloc(n * sizeof(double));
 
-        // Initialize matrix and vectors with random values
         for (int i = 0; i < m * n; i++) {
             A_my[i] = A_ref[i] = (double)(rand() % 100) / 10.0;
         }
@@ -54,28 +50,25 @@ int test_ger(int nrepeats, int first, int last, int inc) {
             y[i] = (double)(rand() % 100) / 10.0;
         }
 
-        // Run BLIS reference implementation
         for (irep = 0; irep < nrepeats; irep++) {
             t_start = bli_clock();
             bli_dger(
-                BLIS_NO_CONJUGATE, BLIS_NO_CONJUGATE, // No conjugate applied to x or y
-                m, n,                                 // Matrix dimensions
-                &alpha,                               // Alpha scalar
-                x, 1,                                 // Vector x with stride 1
-                y, 1,                                 // Vector y with stride 1
-                A_ref, rsA, csA                       // Matrix A_ref with row/column strides
+                BLIS_NO_CONJUGATE, BLIS_NO_CONJUGATE,
+                m, n,
+                &alpha,
+                x, 1, 
+                y, 1,
+                A_ref, rsA, csA
             );
             t_ref = bli_clock_min_diff(t_ref, t_start);
         }
 
-        // Run your implementation
         for (irep = 0; irep < nrepeats; irep++) {
             t_start = bli_clock();
             shpc_dger(m, n, x, 1, y, 1, A_my, rsA, csA);
             t = bli_clock_min_diff(t, t_start);
         }
 
-        // Compare results
         maxdiff = 0.0;
         for (int i = 0; i < m * n; i++) {
             diff = fabs(A_my[i] - A_ref[i]);
@@ -84,13 +77,11 @@ int test_ger(int nrepeats, int first, int last, int inc) {
             }
         }
 
-        // Print results
         printf("data_ger");
         printf("( %4lu, 1:6 ) = [ %5lu %5lu %5lu %8.2f %8.2f %15.4e ];\n",
                (unsigned long)(size - first) / inc + 1,
                (unsigned long)m, (unsigned long)n, (unsigned long)0, t_ref, t, maxdiff);
 
-        // Free allocated memory
         free(A_my);
         free(A_ref);
         free(x);
