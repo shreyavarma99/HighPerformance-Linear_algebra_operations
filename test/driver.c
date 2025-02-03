@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
     	
 	//test_gemm(nrepeats, first, last, inc);
     //test_dot(nrepeats, first, last, inc);
-    test_axpy(nrepeats, first, last, inc);
+    //test_axpy(nrepeats, first, last, inc);
+    test_gemv(nrepeats, first, last, inc);
 
 }
