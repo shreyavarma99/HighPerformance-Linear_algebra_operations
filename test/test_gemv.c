@@ -17,6 +17,7 @@ int test_gemv(int nrepeats, int first, int last, int inc) {
 
     double diff, maxdiff = 0.0;
     const double tolerance = 1e-12;
+    double gflops_ref, gflops;
 
     double alpha = 1.0, beta = 1.0;
 
@@ -64,11 +65,17 @@ int test_gemv(int nrepeats, int first, int last, int inc) {
             t_ref = bli_clock_min_diff(t_ref, t_start);
         }
 
+        double gflops_ref = (2.0 * m * n) / (t_ref * 1.0e9);
+
+
         for (irep = 0; irep < nrepeats; irep++) {
             t_start = bli_clock();
             shpc_dgemv(m, n, A, rsA, csA, x, 1, y_my, 1);
             t = bli_clock_min_diff(t, t_start);
         }
+
+        double gflops = (2.0 * m * n) / (t * 1.0e9);
+
 
         maxdiff = 0.0;
         for (int i = 0; i < m; i++) {
@@ -81,7 +88,7 @@ int test_gemv(int nrepeats, int first, int last, int inc) {
         printf("data_gemv");
         printf("( %4lu, 1:6 ) = [ %5lu %5lu %5lu %8.2f %8.2f %15.4e ];\n",
                (unsigned long)(size - first) / inc + 1,
-               (unsigned long)m, (unsigned long)n, (unsigned long)0, t_ref, t, maxdiff);
+               (unsigned long)m, (unsigned long)n, (unsigned long)0, gflops_ref, gflops, maxdiff);
 
         free(A);
         free(x);

@@ -13,6 +13,7 @@ int test_axpy(int nrepeats, int first, int last, int inc) {
     double t_ref = DBL_MAX, t = DBL_MAX, t_start;
     double diff, maxdiff = 0.0;
     const double tolerance = 1e-12;
+    double gflops_ref, gflops;
 
 
     printf("%% --------- AXPY --------- \n");
@@ -34,55 +35,23 @@ int test_axpy(int nrepeats, int first, int last, int inc) {
         }
 
 
-        // double sum_check = 0.0;
-        // for (int i = 0; i < size; i++) {
-        //     printf("%8.4f + ", y_ref[i]);
-        //     sum_check += y_ref[i];
-        // }
-
-
-        // printf("  >> Sum of y before: %f\n", sum_check);
-
-
-        //  sum_check = 0.0;
-        // for (int i = 0; i < size; i++) {
-        //     printf("%8.4f + ", x[i]);
-        //     sum_check += x[i];
-        // }
-
-
-        // printf("  >> Sum of x: %f\n", sum_check);
-
-
-        // Run BLIS reference implementation
         for (irep = 0; irep < nrepeats; irep++) {
             t_start = bli_clock();
             bli_daxpyv(BLIS_NO_CONJUGATE, size, &alpha, x, 1, y_ref, 1);
             t_ref = bli_clock_min_diff(t_ref, t_start);
         }
 
-
-        //  sum_check = 0.0;
-        // for (int i = 0; i < size; i++) {
-        //     sum_check += y_ref[i];
-        // }
-        // printf("Sum of y my: %f\n", sum_check);
+        gflops_ref = (2.0 * size) / (t_ref * 1.0e9);
 
 
-        // Run my implementation
         for (irep = 0; irep < nrepeats; irep++) {
             t_start = bli_clock();
             shpc_daxpy(size, &alpha, x, 1, y_my, 1);
             t = bli_clock_min_diff(t, t_start);
         }
-        // sum_check = 0.0;
-        // for (int i = 0; i < size; i++) {
-        //     sum_check += y_my[i];
-        // }
-        // printf("Sum of y ref: %f\n", sum_check);
 
+        gflops = (2.0 * (double) size) / (t * 1.0e9);
 
-        // Compare the results
         maxdiff = 0.0;
         for (int i = 0; i < size; i++) {
             diff = fabs(y_my[i] - y_ref[i]);
@@ -92,16 +61,11 @@ int test_axpy(int nrepeats, int first, int last, int inc) {
         }
 
 
-        // Print the results
         printf("data_axpy");
         printf("( %4lu, 1:5 ) = [ %5lu %8.2f %8.2f %15.4e ];\n",
                (unsigned long)(size - first) / inc + 1,
-               (unsigned long)size, t_ref, t, maxdiff);
+               (unsigned long)size, gflops_ref, gflops, maxdiff);
 
-
-
-
-        // Free allocated memory
         free(x);
         free(y_my);
         free(y_ref);

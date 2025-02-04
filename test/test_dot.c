@@ -10,10 +10,16 @@ int test_dot(int nrepeats, int first, int last, int inc) {
     int size, irep;
     double *x, *y;
     double rho_ref = 0.0, rho = 0.0;
-    double t_ref = DBL_MAX, t = DBL_MAX, t_start;
-    double diff, maxdiff = 0.0;
     const double tolerance = 1e-12;
 
+    double done = 1.0;
+	double t_ref = DBL_MAX;
+	double t     = DBL_MAX;
+	double t_start; 
+
+    double gflops_ref, gflops;
+
+	double diff, maxdiff = 0.0;
 
     printf("%% --------- DDOT --------- \n");
     printf("data_ddot");
@@ -41,6 +47,7 @@ int test_dot(int nrepeats, int first, int last, int inc) {
             t_ref = bli_clock_min_diff(t_ref, t_start);
         }
 
+        gflops_ref = (2.0 * size) / (t_ref * 1.0e9);
 
         for (irep = 0; irep < nrepeats; irep++) {
             rho = 0.0;
@@ -48,6 +55,8 @@ int test_dot(int nrepeats, int first, int last, int inc) {
             shpc_ddot(size, x, 1, y, 1, &rho);
             t = bli_clock_min_diff(t, t_start);
         }
+
+        gflops = (2.0 * (double) size) / (t * 1.0e9);
 
 
         diff = fabs(rho - rho_ref);
@@ -57,7 +66,7 @@ int test_dot(int nrepeats, int first, int last, int inc) {
         printf("data_ddot");
         printf("( %4lu, 1:5 ) = [ %5lu %8.2f %8.2f %15.4e ];\n",
                (unsigned long)(size - first) / inc + 1,
-               (unsigned long)size, t_ref, t, diff);
+               (unsigned long)size, gflops_ref, gflops, diff);
 
         free(x);
         free(y);
