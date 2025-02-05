@@ -60,17 +60,14 @@ int test_dot(int nrepeats, int first, int last, int inc) {
         }
 
         gflops = (2.0 * (double) size) / (t * 1.0e9);
-        //printf("rho_my = %.17e, rho_ref = %.17e\n", rho_my, rho_ref);
-
-        // printf("%e, %e ", rho_my, rho_ref);
-        diff = fabs(rho_my - rho_ref);
-        maxdiff = fmax(diff, maxdiff);
+        diff = dabs(rho_my - rho_ref);
+        maxdiff = max(diff, maxdiff);
 
 
         printf("data_ddot");
         printf("( %4lu, 1:5 ) = [ %5lu %8.2f %8.2f %15.4e ];\n",
                (unsigned long)(size - first) / inc + 1,
-               (unsigned long)size, gflops_ref, gflops, diff);
+               (unsigned long)size, gflops_ref, gflops, maxdiff);
 
         free(x);
         free(y);

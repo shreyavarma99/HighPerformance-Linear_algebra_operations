@@ -18,6 +18,7 @@ int test_gemv(int nrepeats, int first, int last, int inc) {
     double gflops_ref, gflops;
     double alpha = 1.0, beta = 1.0;
     int incx, incy;
+    double maxdiff = 0.0;
 
     printf("%% --------- DGEMV --------- \n");
 
@@ -66,7 +67,8 @@ int test_gemv(int nrepeats, int first, int last, int inc) {
 
         gflops = (2.0 * m * n) / (t * 1.0e9);
 
-        double maxdiff = shpc_maxabsdiff(m, 1, y_my, incy, 1, y_ref, incy, 1);
+        double diff = shpc_maxabsdiff(m, 1, y_my, incy, 1, y_ref, incy, 1);
+        maxdiff = max(diff, maxdiff);
 
         printf("data_gemv");
         printf("( %4lu, 1:6 ) = [ %5lu %5lu %5lu %8.2f %8.2f %15.4e ];\n",

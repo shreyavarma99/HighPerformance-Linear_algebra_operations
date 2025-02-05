@@ -18,6 +18,7 @@ int test_ger(int nrepeats, int first, int last, int inc)
     double t_start;
 
     double alpha = 1.0;
+    double maxdiff = 0.0;
 
     printf("%% --------- DGER --------- \n");
 
@@ -65,7 +66,8 @@ int test_ger(int nrepeats, int first, int last, int inc)
 
         double gflops = (2.0 * m * n) / (t * 1.0e9);
 
-        double maxdiff = shpc_maxabsdiff(m, n, A_my, rsA, csA, A_ref, rsA, csA);
+        double diff = shpc_maxabsdiff(m, n, A_my, rsA, csA, A_ref, rsA, csA);
+        maxdiff = max(diff, maxdiff);
 
         printf("data_ger");
         printf("( %4lu, 1:6 ) = [ %5lu %5lu %5lu %8.2f %8.2f %15.4e ];\n",
