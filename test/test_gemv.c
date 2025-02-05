@@ -28,7 +28,6 @@ int test_gemv(int nrepeats, int first, int last, int inc) {
         csA = n;
         rsA = 1;
 
-        //smaller stride
         incx = size;
         incy = size;
 

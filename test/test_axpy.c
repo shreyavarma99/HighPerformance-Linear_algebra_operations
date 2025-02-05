@@ -22,8 +22,8 @@ int test_axpy(int nrepeats, int first, int last, int inc) {
     for (size = last; size >= first; size -= inc) {
         double alpha = (double)(rand() % 100) / 10;
 
-        incx = (size % 3) + 1;
-        incy = (size % 4) + 1;
+        incx = size;
+        incy = size;
 
         x = (double *)malloc(incx * size * sizeof(double));
         y_my = (double *)malloc(incy * size * sizeof(double));
@@ -50,7 +50,7 @@ int test_axpy(int nrepeats, int first, int last, int inc) {
         gflops = (2.0 * size) / (t * 1.0e9);
 
         double diff = shpc_maxabsdiff(size, 1, y_my, incy, 1, y_ref, incy, 1);
-        maxdiff = max(diff, maxdiff);  // Update the overall max difference
+        maxdiff = max(diff, maxdiff);
 
         printf("data_axpy");
         printf("( %4lu, 1:5 ) = [ %5lu %8.2f %8.2f %15.4e ];\n",

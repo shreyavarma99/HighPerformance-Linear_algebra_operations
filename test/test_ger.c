@@ -22,8 +22,7 @@ int test_ger(int nrepeats, int first, int last, int inc)
 
     printf("%% --------- DGER --------- \n");
 
-    for (size = last; size >= first; size -= inc)
-    {
+    for (size = last; size >= first; size -= inc){
         m = size;
         n = size / 2;
         csA = n;
@@ -42,8 +41,7 @@ int test_ger(int nrepeats, int first, int last, int inc)
         bli_drandv(m, x, incx);
         bli_drandv(n, y, incy);
 
-        for (irep = 0; irep < nrepeats; irep++)
-        {
+        for (irep = 0; irep < nrepeats; irep++){
             t_start = bli_clock();
             bli_dger(
                 BLIS_NO_CONJUGATE, BLIS_NO_CONJUGATE,
@@ -57,8 +55,7 @@ int test_ger(int nrepeats, int first, int last, int inc)
 
         double gflops_ref = (2.0 * m * n) / (t_ref * 1.0e9);
 
-        for (irep = 0; irep < nrepeats; irep++)
-        {
+        for (irep = 0; irep < nrepeats; irep++){
             t_start = bli_clock();
             shpc_dger(m, n, x, incx, y, incy, A_my, rsA, csA);
             t = bli_clock_min_diff(t, t_start);

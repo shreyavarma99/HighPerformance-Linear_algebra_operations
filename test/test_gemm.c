@@ -28,8 +28,7 @@ int test_gemm( int nrepeats, int first, int last, int inc)
 	        			 ( unsigned long )0,
 	        			 ( unsigned long )0,
 	        			 ( unsigned long )0, 0.0, 0.0, 0.0 );
-	for ( size=last; size>= first; size-=inc )
-	{
+	for ( size=last; size>= first; size-=inc ){
     	m = n = k = size;
 		csA = m; csB = k; csC = m;
 
@@ -47,8 +46,7 @@ int test_gemm( int nrepeats, int first, int last, int inc)
 		bli_drandm( 0, BLIS_DENSE, m, n, Cold, rsC, csC);
 
 
-		for ( irep=0; irep<nrepeats; irep++ )
-		{
+		for ( irep=0; irep<nrepeats; irep++ ){
 			memcpy( Cref, Cold, csC * n * sizeof( double ) );
 
 			t_start = bli_clock();
@@ -65,8 +63,7 @@ int test_gemm( int nrepeats, int first, int last, int inc)
 		gflops_ref = 2 * m * n * k / ( t_ref * 1.0e9 );
 
 		 
-		for ( irep=0; irep<nrepeats; irep++ )
-		{
+		for ( irep=0; irep<nrepeats; irep++ ){
 			memcpy( C, Cold, csC * n * sizeof( double ) );
 
 			t_start = bli_clock();
