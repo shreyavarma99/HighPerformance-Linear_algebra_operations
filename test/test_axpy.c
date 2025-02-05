@@ -9,11 +9,11 @@
 int test_axpy(int nrepeats, int first, int last, int inc) {
     int size, irep;
     double *x, *y_my, *y_ref;
-    double alpha = 2.0;
+    double alpha = (double)(rand() % 100)/10;
     double t_ref = DBL_MAX, t = DBL_MAX, t_start;
     double diff, maxdiff = 0.0;
-    const double tolerance = 1e-12;
     double gflops_ref, gflops;
+    int incX, incY;
 
 
     printf("%% --------- AXPY --------- \n");
@@ -24,20 +24,25 @@ int test_axpy(int nrepeats, int first, int last, int inc) {
 
 
     for (size = last; size >= first; size -= inc) {
-        x = (double *)malloc(size * sizeof(double));
-        y_my = (double *)malloc(size * sizeof(double));
-        y_ref = (double *)malloc(size * sizeof(double));
+        incX = size;
+        incY = size;
+        x = (double *)malloc(incX * size * sizeof(double));
+        y_my = (double *)malloc(incY * size * sizeof(double));
+        y_ref = (double *)malloc(incY * size * sizeof(double));
 
+        bli_drandv(size, x, incX);
+        bli_drandv(size, y_my, incY);
+        memcpy(y_ref, y_my, size * incY * sizeof(double)); 
 
-        for (int i = 0; i < size; i++) {
-            x[i] = (double)(rand() % 100) / 10.0;
-            y_my[i] = y_ref[i] = (double)(rand() % 100) / 10.0;
-        }
+        // for (int i = 0; i < size; i++) {
+        //     x[i] = (double)(rand() % 100) / 10.0;
+        //     y_my[i] = y_ref[i] = (double)(rand() % 100) / 10.0;
+        // }
 
 
         for (irep = 0; irep < nrepeats; irep++) {
             t_start = bli_clock();
-            bli_daxpyv(BLIS_NO_CONJUGATE, size, &alpha, x, 1, y_ref, 1);
+            bli_daxpyv(BLIS_NO_CONJUGATE, size, &alpha, x, incX, y_ref, incY);
             t_ref = bli_clock_min_diff(t_ref, t_start);
         }
 
@@ -46,7 +51,7 @@ int test_axpy(int nrepeats, int first, int last, int inc) {
 
         for (irep = 0; irep < nrepeats; irep++) {
             t_start = bli_clock();
-            shpc_daxpy(size, &alpha, x, 1, y_my, 1);
+            shpc_daxpy(size, &alpha, x, incX, y_my, incY);
             t = bli_clock_min_diff(t, t_start);
         }
 

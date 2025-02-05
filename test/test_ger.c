@@ -38,17 +38,10 @@ int test_ger(int nrepeats, int first, int last, int inc) {
         x = (double *)malloc(m * sizeof(double));
         y = (double *)malloc(n * sizeof(double));
 
-        for (int i = 0; i < m * n; i++) {
-            A_my[i] = A_ref[i] = (double)(rand() % 100) / 10.0;
-        }
-
-        for (int i = 0; i < m; i++) {
-            x[i] = (double)(rand() % 100) / 10.0;
-        }
-
-        for (int i = 0; i < n; i++) {
-            y[i] = (double)(rand() % 100) / 10.0;
-        }
+        bli_drandm(0, BLIS_DENSE, m, n, A_my, rsA, csA);
+        memcpy(A_ref, A_my, m * n * sizeof(double));
+        bli_drandv(m, x, 1);
+        bli_drandv(n, y, 1);
 
         for (irep = 0; irep < nrepeats; irep++) {
             t_start = bli_clock();

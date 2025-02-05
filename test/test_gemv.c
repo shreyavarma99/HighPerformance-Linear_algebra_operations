@@ -38,17 +38,11 @@ int test_gemv(int nrepeats, int first, int last, int inc) {
         y_my = (double *)malloc(m * sizeof(double));
         y_ref = (double *)malloc(m * sizeof(double));
 
-        for (int i = 0; i < m * n; i++) {
-            A[i] = (double)(rand() % 100) / 10.0;
-        }
+        bli_drandm(0, BLIS_DENSE, m, n, A, rsA, csA);
+        bli_drandv(n, x, 1);
+        bli_drandv(m, y_my, 1);  // Initialize y_my with random values
+        memcpy(y_ref, y_my, m * sizeof(double));  // Copy y_my to y_ref
 
-        for (int i = 0; i < n; i++) {
-            x[i] = (double)(rand() % 100) / 10.0;
-        }
-
-        for (int i = 0; i < m; i++) {
-            y_my[i] = y_ref[i] = 0.0;
-        }
 
         for (irep = 0; irep < nrepeats; irep++) {
             t_start = bli_clock();
