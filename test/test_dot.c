@@ -31,29 +31,17 @@ int test_dot(int nrepeats, int first, int last, int inc) {
 
 
     for (size = last; size >= first; size -= inc) {
-        incX = 2;
-        incY = 2;
+        incX = size;
+        incY = size;
 
         double rho = (double)(rand() % 100) / 10.0;
         double rho_my = rho;
         double rho_ref = rho;
 
         // Allocate vectors
-        // x = (double *)malloc(incX * size * sizeof(double));
-        // y = (double *)malloc(incY * size * sizeof(double));
         x = (double *)malloc(size * incX * sizeof(double));
         y = (double *)malloc(size * incY * sizeof(double));
 
-
-        // for (int i = 0; i < size; i++) {
-        //     x[i] = (double)(rand() % 100) / 10.0;
-        //     y[i] = (double)(rand() % 100) / 10.0;
-        // }
-
-        // for (int i = 0; i < size; i++) {
-        //     x[i * incX] = (double)(rand() % 100) / 10.0;
-        //     y[i * incY] = (double)(rand() % 100) / 10.0;
-        // }
         bli_drandv(size, x, incX);
         bli_drandv(size, y, incY);
 
