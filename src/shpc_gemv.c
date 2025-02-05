@@ -1,12 +1,16 @@
-//i on the inside made error go lower
-
 void shpc_dgemv(int m, int n, double *A, int rsA, int csA, double *x, int incx, double *y, int incy) {
-    for (int j = 0; j < n; j++) {  // Loop over columns first
-        int x_index = j * incx;
-        for (int i = 0; i < m; i++) {  // Loop over rows inside
+    for (int i = 0; i < m; i++) {
+        int y_index = i * incy;
+        double temp = 0.0;
+
+        // Accumulate the row-wise dot product for y[i]
+        for (int j = 0; j < n; j++) {
             int A_index = i * rsA + j * csA;
-            int y_index = i * incy;
-            y[y_index] += A[A_index] * x[x_index];
+            int x_index = j * incx;
+            temp += A[A_index] * x[x_index];
         }
+
+        // Update y[i]
+        y[y_index] += temp;
     }
 }
